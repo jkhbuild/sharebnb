@@ -6,6 +6,8 @@
 
 # Ignore bundler config.
 /.bundle
+.DS_Store
+.byebug_history
 
 # Ignore all logfiles and tempfiles.
 /log/*
