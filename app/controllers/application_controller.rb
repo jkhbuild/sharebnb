@@ -15,6 +15,12 @@ class ApplicationController < ActionController::API
         @current_user = nil
     end
 
+    def require_logged_in 
+        if !logged_in?
+            render json: { errors: ['Must be logged in'] }, status: :unauthorized
+        end
+    end
+
     private
 
     def snake_case_params
