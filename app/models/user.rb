@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+    has_secure_password
+    
     validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
     validates :first_name, :last_name, :password_digest, :session_token, presence: true
     validates :session_token, presence: true, uniqueness: true
@@ -16,7 +18,13 @@ class User < ApplicationRecord
             nil 
         end
     end
-    
+
+    def reset_session_token!
+        self.session_token = generate_unique_session_token
+        save!
+        session_token
+    end
+
     private
 
     def generate_unique_session_token
