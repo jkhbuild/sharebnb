@@ -1,4 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
+import { RequestOptions } from "https";
 
 interface UserType {
     id: number;
@@ -19,7 +20,38 @@ interface SignUpType {
     phoneNumber: string;
 }
 
+export async function fetchAPI(
+}
+
+export async function signup(data: SignUpType) {
+    return fetchAPI(authRoute("/signup"), {
+        method: "POST",
+        body: JSON.stringify(data)
+    })
+}
+
+export const signupUser = createAsyncThunk(
+    "user/signupUser",
+    async (data: SignUpType, thunkAPI): Promise<UserType> => {
+        let res: Response;
+        try {
+            res = await signup(data);
+        } catch (errorRes) {
+            const resData = await (errorRes as Response).json();
+            throw thunkAPI.rejectWithValue(resData.errors);
+        }
+        const user: UserType = await res.json();
+        return user;
+    }
+)
+
 const userSlice = createSlice({
     name: "session",
-    initialState: initialState as UserType
+    initialState: initialState as UserType | null,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder.addCase(signupUser.fulfilled, (_state, action) => {
+            return action.payload;
+        })
+    }
 })
