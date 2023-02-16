@@ -1,3 +1,4 @@
+import csrfFetch from "./csrf.js";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RequestOptions } from "https";
 
@@ -20,15 +21,28 @@ interface SignUpType {
     phoneNumber: string;
 }
 
-export async function fetchAPI(
+
+export const signup = (data: SignUpType) => async(dispatch) => {
+    const { email, password, firstName, lastName, birthDate, phoneNumber } = data
+    const response = await csrfFetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify({
+            email,
+            password,
+            firstName,
+            lastName
+        })
+
+    })
+
 }
 
-export async function signup(data: SignUpType) {
-    return fetchAPI(authRoute("/signup"), {
-        method: "POST",
-        body: JSON.stringify(data)
-    })
-}
+// export async function signup(data: SignUpType) {
+//     return fetchAPI(authRoute("/signup"), {
+//         method: "POST",
+//         body: JSON.stringify(data)
+//     })
+// }
 
 export const signupUser = createAsyncThunk(
     "user/signupUser",
