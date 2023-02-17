@@ -21,6 +21,18 @@ interface SignUpType {
     phoneNumber: string;
 }
 
+const SET_CURRENT_USER = "session/setCurrentUser";
+const REMOVE_CURRENT_USER = "session/removeCurrentUser"
+
+export const setCurrentUser = (user: UserType) => ({
+    type: SET_CURRENT_USER,
+    payload: user,
+})
+
+export const removeCurrentUser = () => ({
+    type: REMOVE_CURRENT_USER,
+})
+
 
 export const signup = (data: SignUpType) => async(dispatch) => {
     const { email, password, firstName, lastName, birthDate, phoneNumber } = data
@@ -32,17 +44,9 @@ export const signup = (data: SignUpType) => async(dispatch) => {
             firstName,
             lastName
         })
-
     })
-
 }
 
-// export async function signup(data: SignUpType) {
-//     return fetchAPI(authRoute("/signup"), {
-//         method: "POST",
-//         body: JSON.stringify(data)
-//     })
-// }
 
 export const signupUser = createAsyncThunk(
     "user/signupUser",
