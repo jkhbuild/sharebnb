@@ -1,4 +1,4 @@
-import csrfFetch from "./csrf.js";
+import csrfFetch from "./csrf";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { RequestOptions } from "https";
 
