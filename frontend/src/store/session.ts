@@ -33,6 +33,16 @@ export const removeCurrentUser = () => ({
     type: REMOVE_CURRENT_USER,
 })
 
+const storeCSRFToken = (response: Response) => {
+    const csrfToken = response.headers.get("X-CSRF-Token");
+    if (csrfToken) sessionStorage.setItem("X-CSRF-TOKEN", csrfToken)
+}
+
+const storeCurrentUser = (user) => (
+    if (user) sessionStorage.setItem("currentUser", JSON.stringify(user));
+    else sessionStorage.removeItem("currentUser")
+)
+
 
 export const signup = (data: SignUpType) => async(dispatch) => {
     const { email, password, firstName, lastName, birthDate, phoneNumber } = data
@@ -42,9 +52,13 @@ export const signup = (data: SignUpType) => async(dispatch) => {
             email,
             password,
             firstName,
-            lastName
+            lastName,
+            birthDate,
+            phoneNumber
         })
     })
+    const userData = await response.json();
+
 }
 
 
