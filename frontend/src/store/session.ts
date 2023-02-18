@@ -38,13 +38,13 @@ const storeCSRFToken = (response: Response) => {
     if (csrfToken) sessionStorage.setItem("X-CSRF-TOKEN", csrfToken)
 }
 
-const storeCurrentUser = (user) => (
+const storeCurrentUser = (user: object) => {
     if (user) sessionStorage.setItem("currentUser", JSON.stringify(user));
     else sessionStorage.removeItem("currentUser")
-)
+}
 
 
-export const signup = (data: SignUpType) => async(dispatch) => {
+export const signup = (data: SignUpType) => async(dispatch: any) => {
     const { email, password, firstName, lastName, birthDate, phoneNumber } = data
     const response = await csrfFetch("/api/users", {
         method: "POST",
@@ -58,7 +58,8 @@ export const signup = (data: SignUpType) => async(dispatch) => {
         })
     })
     const userData = await response.json();
-
+    storeCurrentUser(userData.user)
+    dispatch(setCurrentUser(userData.user))
 }
 
 
