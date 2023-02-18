@@ -1,10 +1,14 @@
-
+interface headerType {
+    "Content-Type": string,
+    "X-CSRF-Token": string | null
+}
 interface optionsType {
+    body: any,
     method: string,
-    headers: object
+    headers: headerType
 }
 
-async function csrfFetch(url: string, options: optionsType = {}) {
+async function csrfFetch(url: string, options: optionsType) {
   options.method = options.method || "GET";
   options.headers = options.headers || {};
 
