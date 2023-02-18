@@ -1,31 +1,30 @@
-interface headerType {
-    "Content-Type": string,
-    "X-CSRF-Token": string | null
-}
-interface optionsType {
-    body: any,
-    method: string,
-    headers: headerType
+import { stringify } from "querystring";
+
+interface optionsType extends RequestInit {
+    headers?: Record<string, string>;
 }
 
-async function csrfFetch(url: string, options: optionsType) {
-  options.method = options.method || "GET";
-  options.headers = options.headers || {};
+async function csrfFetch(url: string, options?: optionsType): Promise<Response> {
+    const optionsParams = options || {}
+    optionsParams.method = optionsParams.method || "GET";
+    optionsParams.headers = optionsParams.headers || {};
 
-  if (options.method.toUpperCase() !== "GET") {
-    if (
-      !options.headers["Content-Type"] &&
-      !(options.body instanceof FormData)
-    ) {
-      options.headers["Content-Type"] = "application/json";
+    if (optionsParams?.method?.toUpperCase() !== "GET") {
+        if (!optionsParams.headers["Content-Type"] && !(optionsParams.body instanceof FormData)
+        ) {
+        optionsParams.headers["Content-Type"] = "application/json";
+        }
+
+        const csrfToken = sessionStorage.getItem("X-CSRF-Token");
+        if (csrfToken) {
+            optionsParams.headers["X-CSRF-Token"] = csrfToken
+        }
     }
-    options.headers["X-CSRF-Token"] = sessionStorage.getItem("X-CSRF-Token");
-  }
 
-  const res = await fetch(url, options);
+    const res = await fetch(url, optionsParams);
 
-  if (res.status >= 400) throw res;
-  return res;
+    if (res.status >= 400) throw res;
+    return res;
 }
 
 export default csrfFetch;
